@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.example.kotlinmovie"
         minSdk 26
-        targetSdk 29
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -62,4 +62,5 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
 
+    //Coroutine dependenciesleri ekle
 }
