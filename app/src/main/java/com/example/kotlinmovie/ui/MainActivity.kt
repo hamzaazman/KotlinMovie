@@ -1,5 +1,6 @@
 package com.example.kotlinmovie.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.kotlinmovie.adapter.MovieAdapter
 import com.example.kotlinmovie.databinding.ActivityMainBinding
 import com.example.kotlinmovie.model.Movie
+import com.example.kotlinmovie.ui.DetailActivity.Companion.EXTRA_MOVIE
 import com.example.kotlinmovie.viewmodel.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,6 +51,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToDetail(movie: Movie) {
-
+        val intent = Intent(this, DetailActivity::class.java).apply {
+            putExtra(EXTRA_MOVIE, movie)
+        }
+        startActivity(intent)
     }
 }
