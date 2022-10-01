@@ -22,7 +22,7 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE)
+        val movie = intent?.getParcelableExtra<Movie>(EXTRA_MOVIE)
 
         movie?.run {
             binding.detailTitle.text = title

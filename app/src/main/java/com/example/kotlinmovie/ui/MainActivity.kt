@@ -2,6 +2,8 @@ package com.example.kotlinmovie.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,24 +32,44 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        setupViewModelAndObserve()
+        viewModel = ViewModelProvider(this)[MovieViewModel::class.java]
         setupRecyclerView()
 
+        readDatabase()
+    }
+
+    private fun readDatabase() {
+        binding.progressBar.visibility = View.VISIBLE
+
+        viewModel.readMovieByDatabase.observe(this@MainActivity, Observer { listMovie ->
+            if (listMovie.isNotEmpty()) {
+                Log.d("Database", "readDatabase called!")
+                movieAdapter.differ.submitList(listMovie)
+            } else {
+                requestApiData()
+            }
+            binding.progressBar.visibility = View.GONE
+
+        })
+
+    }
+
+    private fun requestApiData() {
+        Log.d("Retrofit", "requestApiData called!")
+        binding.progressBar.visibility = View.VISIBLE
+        viewModel.movieList.observe(this, Observer {
+            movieAdapter.differ.submitList(it)
+        })
+        binding.progressBar.visibility = View.GONE
     }
 
     private fun setupRecyclerView() {
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(this@MainActivity, 2)
             adapter = movieAdapter
-        }
-    }
+            setHasFixedSize(true)
 
-    private fun setupViewModelAndObserve() {
-        viewModel = ViewModelProvider(this)[MovieViewModel::class.java]
-        viewModel.movieList.observe(this, Observer {
-            movieAdapter.differ.submitList(it)
-        })
+        }
     }
 
     private fun goToDetail(movie: Movie) {

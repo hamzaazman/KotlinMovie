@@ -21,7 +21,7 @@ class MovieAdapter(private val clickListener: MovieClickListener) :
 
             Glide.with(itemView.context)
                 .load("$imagePath${movie.poster_path}")
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.ic_launcher_background)
                 .fitCenter()
                 .into(binding.movieImageView)
         }

@@ -1,6 +1,6 @@
 package com.example.kotlinmovie.di
 
-import com.example.kotlinmovie.data.MovieApi
+import com.example.kotlinmovie.data.network.MovieApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

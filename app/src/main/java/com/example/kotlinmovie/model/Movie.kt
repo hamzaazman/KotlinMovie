@@ -1,9 +1,12 @@
 package com.example.kotlinmovie.model
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Entity(tableName = "movies", primaryKeys = [("id")])
 data class Movie(
     val adult: Boolean,
     val backdrop_path: String,
