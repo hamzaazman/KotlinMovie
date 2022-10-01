@@ -7,6 +7,6 @@ import retrofit2.http.GET
 interface MovieApi {
     //coroutine branch' deyim. Ona göre operasyonları depiştir...
     @GET("hamzaazman/Dataset/main/movies.json")
-    fun getMovies(): Single<List<Movie>>
+    suspend fun getMovies(): List<Movie>
 
 }
