@@ -4,14 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.kotlinmovie.R
 import com.example.kotlinmovie.adapter.MovieAdapter
 import com.example.kotlinmovie.databinding.ActivityMainBinding
 import com.example.kotlinmovie.model.Movie
 import com.example.kotlinmovie.ui.DetailActivity.Companion.EXTRA_MOVIE
+import com.example.kotlinmovie.util.Status
 import com.example.kotlinmovie.viewmodel.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,33 +37,41 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[MovieViewModel::class.java]
         setupRecyclerView()
-
         readDatabase()
+
+
     }
 
     private fun readDatabase() {
-        binding.progressBar.visibility = View.VISIBLE
-
+        binding.progressBar.visibility = View.GONE
         viewModel.readMovieByDatabase.observe(this@MainActivity, Observer { listMovie ->
             if (listMovie.isNotEmpty()) {
-                Log.d("Database", "readDatabase called!")
                 movieAdapter.differ.submitList(listMovie)
             } else {
                 requestApiData()
             }
-            binding.progressBar.visibility = View.GONE
-
         })
 
     }
 
     private fun requestApiData() {
-        Log.d("Retrofit", "requestApiData called!")
-        binding.progressBar.visibility = View.VISIBLE
-        viewModel.movieList.observe(this, Observer {
-            movieAdapter.differ.submitList(it)
-        })
-        binding.progressBar.visibility = View.GONE
+        viewModel.movieList.observe(this) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    movieAdapter.differ.submitList(it.data)
+                    binding.progressBar.visibility = View.GONE
+                    binding.recyclerView.visibility = View.VISIBLE
+                }
+                Status.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.recyclerView.visibility = View.GONE
+                }
+                Status.ERROR -> {
+                    binding.progressBar.visibility = View.GONE
+                    Log.e("RequestApiData", it.message.toString())
+                }
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -77,5 +88,7 @@ class MainActivity : AppCompatActivity() {
             putExtra(EXTRA_MOVIE, movie)
         }
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
+
 }
